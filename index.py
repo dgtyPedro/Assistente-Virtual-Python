@@ -14,6 +14,7 @@ from googlesearch import search
 import webbrowser
 import time
 import pyautogui
+import pywhatkit as kit
 
 r=sr.Recognizer()
 with sr.Microphone() as source:                
@@ -47,7 +48,13 @@ if any(x in phrase_option for x in actionlist):
             webbrowser.open_new_tab(url)
 
         def GoPlay(self):
-            pass
+            what_play=''.join([str(item) for item in phrase_list])
+            speak="Playing {}".format(what_play)
+            output = gTTS(text=speak, lang='en', slow=False)  
+            output.save("output.mp3")
+            os.system("start output.mp3")
+            time.sleep(3)
+            kit.playonyt("{}".format(what_play))
 
         def GoBuy(self):
             what_buy=''.join([str(item) for item in phrase_list])
