@@ -39,12 +39,18 @@ class Ui_Dialog(object):
         self.pushButton.setObjectName("pushButton")
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setEnabled(True)
-        self.label.setGeometry(QtCore.QRect(160, 40, 171, 31))
+        self.label.setGeometry(QtCore.QRect(160, 30, 171, 31))
         self.label.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.label.setTextFormat(QtCore.Qt.TextFormat.RichText)
         self.label.setScaledContents(False)
         self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignTop)
         self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(20, 420, 441, 41))
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(Dialog)
+        self.label_3.setGeometry(QtCore.QRect(10, 430, 441, 41))
+        self.label_3.setObjectName("label_3")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -56,7 +62,106 @@ class Ui_Dialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Segoe UI\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:22pt; font-weight:700; font-style:italic; color:#ffffff;\">...</span></p></body></html>"))
+        self.label_2.setText(_translate("Dialog", "<html><head/><body><p><br/><span style=\" font-size:12pt; font-style:italic; color:#ffffff;\">PyNet diz:</span></p></body></html>")) 
+        self.label_3.setText(_translate("Dialog", "<html><head/><body><p><span style=\" color:#ffffff;\"><br/></span><span style=\" font-size:12pt; font-style:italic; color:#ffffff;\">PyNet ouve:</span></p></body></html>"))
+
+
+
+    def teste(self):
+    
+        import speech_recognition as sr
+        import os
+        from gtts import gTTS
+        from googlesearch import search
+        import webbrowser
+        import time
+        import pyautogui
+        import pywhatkit as kit
+        r=sr.Recognizer()
+        with sr.Microphone() as source:                
+            audio = r.listen(source)   
+
+            
+        phrase=r.recognize_google(audio, language = "en-us", show_all=False)
+        print(phrase)
+        phrase_list=phrase.split()
+        phrase_option=phrase_list[0]
+        actionlist = ('search', 'play', 'buy', 'find', 'open')
+
+
+        if any(x in phrase_option for x in actionlist):
+            print('Running')
+            
+            class IaSearch:
+                def __init__(self):
+                    actiongo = phrase_option
+                    textgo = phrase_list
+                    phrase_list.pop(0)  
+
+                def GoSearch(self):        
+                    what_search=''.join([str(item) for item in phrase_list])
+                    speak="Searching {}".format(what_search)
+                    output = gTTS(text=speak, lang='en', slow=False)  
+                    output.save("output.mp3")
+                    os.system("start output.mp3")
+                    time.sleep(3)
+                    url = "https://www.google.com.tr/search?q={}".format(what_search)
+                    webbrowser.open_new_tab(url)
+
+                def GoPlay(self):
+                    what_play=''.join([str(item) for item in phrase_list])
+                    speak="Playing {}".format(what_play)
+                    output = gTTS(text=speak, lang='en', slow=False)  
+                    output.save("output.mp3")
+                    os.system("start output.mp3")
+                    time.sleep(3)
+                    kit.playonyt("{}".format(what_play))
+
+                def GoBuy(self):
+                    what_buy=''.join([str(item) for item in phrase_list])
+                    speak="Buying {}".format(what_buy)
+                    output = gTTS(text=speak, lang='en', slow=False)  
+                    output.save("output.mp3")
+                    os.system("start output.mp3")
+                    time.sleep(3)
+                    url="www.google.com/search?hl=pt-BR&tbm=shop&sxsrf=ALeKk033V30FKlaPRoPs8IsqWmNmzEhyVg:1628253846073&q={}&tbas=0&tbs=vw:g&sa=X&ved=0ahUKEwj0w-SgtpzyAhUalZUCHTClCRkQvSsI1gQoAA&biw=1496&bih=723".format(what_buy)
+                    webbrowser.open_new_tab(url)
+                
+                def GoFind(self):
+                    what_find=''.join([str(item) for item in phrase_list])
+                    speak="Finding {}".format(what_find)
+                    output = gTTS(text=speak, lang='en', slow=False)  
+                    output.save("output.mp3")
+                    os.system("start output.mp3")
+                    time.sleep(3)
+                    url="www.google.com.tr/maps/search/{}/".format(what_find)
+                    webbrowser.open_new_tab(url)
+
+                def GoOpen(self):
+                    what_open=''.join([str(item) for item in phrase_list])
+                    speak="Opening {}".format(what_open)
+                    output = gTTS(text=speak, lang='en', slow=False)  
+                    output.save("output.mp3")
+                    os.system("start output.mp3")
+                    time.sleep(3)
+                    pyautogui.press('Win')
+                    time.sleep(1)
+                    pyautogui.write('{}'.format(what_open), interval=0.1)
+                    pyautogui.press('Enter')
+                    
+
+            run=IaSearch()
+            if phrase_option=='search':  
+                run.GoSearch()
+            elif phrase_option=='play':
+                run.GoPlay()
+            elif phrase_option=='buy':
+                run.GoBuy()
+            elif phrase_option=='find':
+                run.GoFind()
+            elif phrase_option=='open':
+                run.GoOpen()
 
 
 if __name__ == "__main__":
@@ -65,5 +170,6 @@ if __name__ == "__main__":
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
     ui.setupUi(Dialog)
+    ui.pushButton.clicked.connect(Ui_Dialog.teste)
     Dialog.show()
     sys.exit(app.exec())
